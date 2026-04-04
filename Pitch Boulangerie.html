@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BakerySales — Votre boulangerie, pilotée par les données</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1F3C;
+    --purple: #2D1B4E;
+    --cyan: #00D9FF;
+    --cream: #F5F1E8;
+    --warm-gray: #888780;
+    --muted: #5F5E5A;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 18px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0,217,255,0.15);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--cyan); }
+  .header-pill {
+    background: rgba(0,217,255,0.1);
+    border: 1px solid rgba(0,217,255,0.28);
+    color: var(--cyan);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--purple) 100%);
+    padding: 100px 32px 88px;
+    text-align: center;
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%2300D9FF' fill-opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero > * { position: relative; z-index: 1; }
+
+  .eyebrow {
+    display: inline-block;
+    background: rgba(0,217,255,0.12);
+    border: 1px solid rgba(0,217,255,0.3);
+    color: var(--cyan);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6vw, 66px);
+    font-weight: 900;
+    line-height: 1.08;
+    margin-bottom: 22px;
+    letter-spacing: -1.5px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--cyan);
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(245,241,232,0.75);
+    line-height: 1.8;
+    max-width: 540px;
+    margin: 0 auto 56px;
+    font-weight: 300;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 56px;
+    flex-wrap: wrap;
+    padding-top: 44px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--cyan);
+    line-height: 1;
+    margin-bottom: 7px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: rgba(245,241,232,0.45);
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 88px 32px; }
+  .inner { max-width: 1100px; margin: 0 auto; }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 14px;
+  }
+  .tag.dark { color: var(--navy); opacity: 0.4; }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.8px;
+    margin-bottom: 18px;
+  }
+  .lead {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 520px;
+    font-weight: 400;
+  }
+
+  /* ── PROBLÈME ── */
+  .s-problem { background: var(--white); }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    margin-top: 52px;
+  }
+  .pcard {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 28px 24px;
+    border-left: 3px solid var(--cyan);
+  }
+  .pcard-emoji { font-size: 26px; margin-bottom: 14px; }
+  .pcard-title { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .pcard-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  /* ── FONCTIONNALITÉS ── */
+  .s-features { background: var(--cream); }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 52px;
+  }
+  .fcard {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 36px 28px;
+    border: 1px solid rgba(13,31,60,0.07);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+  .fcard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(13,31,60,0.1);
+  }
+  .fcard::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--navy), var(--cyan));
+  }
+  .fcard-icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--navy), var(--purple));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 22px;
+  }
+  .fcard-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 11px;
+  }
+  .fcard-text { font-size: 14px; color: var(--muted); line-height: 1.72; }
+  .fcard-badge {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--cream);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .fcard-badge span { color: var(--cyan); }
+
+  /* ── OFFRE PILOTE ── */
+  .s-pilot {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--purple) 100%);
+    color: var(--cream);
+    text-align: center;
+  }
+  .s-pilot h2 { color: var(--cream); }
+  .s-pilot .lead { color: rgba(245,241,232,0.6); margin: 0 auto; }
+  .pilot-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,217,255,0.22);
+    border-radius: 20px;
+    padding: 56px 48px;
+    max-width: 700px;
+    margin: 48px auto 0;
+  }
+  .big-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    color: var(--cyan);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .big-sub {
+    font-size: 15px;
+    color: rgba(245,241,232,0.5);
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+  .checklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px 24px;
+    margin: 0 0 40px;
+    text-align: left;
+  }
+  .check-item {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(245,241,232,0.82);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .check-item::before {
+    content: '✓';
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .btn-cta {
+    background: var(--cyan);
+    color: var(--navy);
+    padding: 16px 52px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    transition: opacity 0.18s, transform 0.18s;
+    display: inline-block;
+  }
+  .btn-cta:hover { opacity: 0.88; transform: translateY(-2px); }
+  .pilot-note {
+    margin-top: 18px;
+    font-size: 12px;
+    color: rgba(245,241,232,0.3);
+    font-weight: 400;
+  }
+
+  /* ── DÉROULEMENT ── */
+  .s-timeline { background: var(--white); }
+  .timeline {
+    margin-top: 56px;
+    max-width: 660px;
+  }
+  .t-item {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    padding-bottom: 40px;
+    position: relative;
+  }
+  .t-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 27px; top: 50px; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, rgba(0,217,255,0.35), transparent);
+  }
+  .t-dot {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--navy), var(--purple));
+    border-radius: 50%;
+    border: 2px solid rgba(0,217,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .t-week {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 5px;
+  }
+  .t-title { font-size: 17px; font-weight: 600; color: var(--navy); margin-bottom: 7px; }
+  .t-text { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+  /* ── TARIFS ── */
+  .s-pricing { background: var(--cream); }
+
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-top: 52px;
+  }
+
+  .plan-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 44px 40px;
+    border: 1px solid rgba(13,31,60,0.07);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+  .plan-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 56px rgba(13,31,60,0.1);
+  }
+  .plan-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .plan-card.orbit::before {
+    background: linear-gradient(90deg, var(--navy), var(--cyan));
+  }
+  .plan-card.atlas::before {
+    background: linear-gradient(90deg, var(--purple), #FF6B6B);
+  }
+  .plan-card.atlas {
+    background: linear-gradient(160deg, var(--navy) 0%, var(--purple) 100%);
+    color: var(--cream);
+    border: none;
+  }
+
+  .plan-package-name {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .plan-card.atlas .plan-package-name {
+    color: rgba(0,217,255,0.7);
+  }
+
+  .plan-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .plan-card.atlas .plan-title { color: var(--cream); }
+
+  .plan-tagline {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .plan-card.atlas .plan-tagline { color: rgba(245,241,232,0.6); }
+
+  .plan-pricing-block {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+  }
+  .plan-card.atlas .plan-pricing-block {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(0,217,255,0.18);
+  }
+
+  .plan-setup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(13,31,60,0.07);
+  }
+  .plan-card.atlas .plan-setup-row {
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+  .plan-setup-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+  .plan-card.atlas .plan-setup-label { color: rgba(245,241,232,0.45); }
+  .plan-setup-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .plan-card.atlas .plan-setup-amount { color: var(--cream); }
+
+  .plan-monthly-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .plan-monthly-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+  .plan-card.atlas .plan-monthly-label { color: rgba(245,241,232,0.45); }
+  .plan-monthly-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--cyan);
+    line-height: 1;
+  }
+  .plan-monthly-period {
+    font-size: 13px;
+    color: var(--warm-gray);
+    margin-left: 4px;
+  }
+  .plan-card.atlas .plan-monthly-period { color: rgba(245,241,232,0.4); }
+
+  .plan-features {
+    list-style: none;
+    flex-grow: 1;
+    margin-bottom: 32px;
+  }
+  .plan-features li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.55;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(13,31,60,0.05);
+  }
+  .plan-card.atlas .plan-features li {
+    color: rgba(245,241,232,0.75);
+    border-bottom-color: rgba(255,255,255,0.06);
+  }
+  .plan-features li::before {
+    content: '✓';
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .plan-cta {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 15px 32px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.18s, transform 0.18s;
+    letter-spacing: 0.2px;
+  }
+  .plan-card.orbit .plan-cta {
+    background: var(--navy);
+    color: var(--cream);
+  }
+  .plan-card.atlas .plan-cta {
+    background: var(--cyan);
+    color: var(--navy);
+  }
+  .plan-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .plan-note {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--warm-gray);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .plan-card.atlas .plan-note { color: rgba(245,241,232,0.3); }
+
+  .hours-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,217,255,0.1);
+    border: 1px solid rgba(0,217,255,0.25);
+    color: var(--cyan);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 56px 32px;
+    text-align: center;
+    border-top: 1px solid rgba(0,217,255,0.12);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .footer-logo span { color: var(--cyan); }
+  .footer-sub { font-size: 14px; color: rgba(245,241,232,0.42); margin-bottom: 36px; }
+  hr.divider {
+    border: none;
+    border-top: 1px solid rgba(0,217,255,0.1);
+    max-width: 360px;
+    margin: 0 auto 24px;
+  }
+  .footer-copy { font-size: 11px; color: rgba(245,241,232,0.28); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 760px) {
+    .plans-grid { grid-template-columns: 1fr; }
+    .checklist { grid-template-columns: 1fr; }
+    .pilot-box { padding: 36px 24px; }
+    .plan-card { padding: 32px 24px; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero .eyebrow  { animation: fadeUp 0.65s ease both 0.1s; }
+  .hero h1        { animation: fadeUp 0.65s ease both 0.22s; }
+  .hero .hero-sub { animation: fadeUp 0.65s ease both 0.34s; }
+  .hero-stats     { animation: fadeUp 0.65s ease both 0.5s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">Bakery<span>Sales</span></div>
+    <div class="header-pill">🥐 1ère boulangerie offerte</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">Fait pour les boulangers, par les données</div>
+  <h1>Votre boulangerie,<br><em>enfin pilotée</em><br>par les chiffres.</h1>
+  <p class="hero-sub">Une plateforme d'analyse complète pensée pour les boulangeries indépendantes — prévisions des ventes, performance produit et insights quotidiens, tout en un seul endroit.</p>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-num">6,2%</div>
+      <div class="stat-label">Erreur de prévision</div>
+    </div>
+    <div>
+      <div class="stat-num">100+</div>
+      <div class="stat-label">Modèles IA entraînés sur votre catalogue</div>
+    </div>
+    <div>
+      <div class="stat-num">3</div>
+      <div class="stat-label">Vues du dashboard</div>
+    </div>
+    <div>
+      <div class="stat-num">30j</div>
+      <div class="stat-label">Pilote offert</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLÈME -->
+<section class="s-problem">
+  <div class="inner">
+    <div class="tag">Le problème</div>
+    <h2>Gérer une boulangerie<br>à l'aveugle, ça coûte cher.</h2>
+    <p class="lead">La plupart des boulangers prennent leurs décisions à l'instinct. Résultat : du gâchis, du chiffre d'affaires laissé sur la table, et aucune idée de ce qui fait vraiment la rentabilité.</p>
+    <div class="grid-4">
+      <div class="pcard">
+        <div class="pcard-emoji">📦</div>
+        <div class="pcard-title">Surproduction et gaspillage</div>
+        <div class="pcard-text">Trop de ce qui ne part pas, pas assez de ce qui s'arrache. Chaque jour, en silence.</div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-emoji">📉</div>
+        <div class="pcard-title">Aucune visibilité sur les tendances</div>
+        <div class="pcard-text">Saisonnalité, jours creux, heures de pointe — rien n'est lisible sans les bonnes données.</div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-emoji">🙈</div>
+        <div class="pcard-title">Des produits qui passent inaperçus</div>
+        <div class="pcard-text">Votre produit le plus rentable se cache peut-être au fond d'un rapport de caisse que personne ne lit.</div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-emoji">⏰</div>
+        <div class="pcard-title">Des décisions prises sans données fiables</div>
+        <div class="pcard-text">Sans tableaux de bord clairs, piloter la rentabilité revient à naviguer à vue — impossible de challenger ses équipes ou d'arbitrer efficacement.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FONCTIONNALITÉS -->
+<section class="s-features">
+  <div class="inner">
+    <div class="tag">Ce que vous obtenez</div>
+    <h2>Un dashboard pensé<br>pour votre boulangerie.</h2>
+    <div class="grid-3">
+      <div class="fcard">
+        <div class="fcard-icon">☀️</div>
+        <div class="fcard-title">Vue du Jour</div>
+        <div class="fcard-text">Ouvrez le dashboard le matin et retrouvez votre chiffre d'affaires, ticket moyen, nombre de transactions et produits phares — plus une prévision sur 7 jours pour anticiper la semaine.</div>
+        <div class="fcard-badge">Prévisions à <span>±6,2% de précision</span></div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-icon">📊</div>
+        <div class="fcard-title">Performance & Tendances</div>
+        <div class="fcard-text">CA par jour et par heure, tendances par catégorie, et vos 10 meilleurs produits sur la période de votre choix — 7, 30 ou 90 jours. Sachez exactement ce qui fait tourner la boutique.</div>
+        <div class="fcard-badge">Filtre <span>semaine / mois / trimestre</span></div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-icon">🤖</div>
+        <div class="fcard-title">Prévisions & Planification IA</div>
+        <div class="fcard-text">Propulsé par des modèles Prophet et XGBoost entraînés sur votre propre historique de ventes. Un modèle dédié par produit populaire, catégorie et sous-catégorie — pour des prévisions au plus près de votre réalité, jusqu'à 30 jours à l'avance.</div>
+        <div class="fcard-badge">Un modèle dédié <span>par produit populaire, catégorie et sous-catégorie</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRE PILOTE -->
+<section class="s-pilot">
+  <div class="inner">
+    <div class="tag" style="color: rgba(0,217,255,0.65);">Offre pilote</div>
+    <h2>Un mois entier, offert.<br>Sans engagement.</h2>
+    <p class="lead">Parce que je veux construire quelque chose qui fonctionne vraiment pour une vraie boulangerie — et je préfère vous le prouver avant de vous demander quoi que ce soit.</p>
+    <div class="pilot-box">
+      <div class="big-price">0 €</div>
+      <div class="big-sub">pendant 30 jours — accès complet, accompagnement complet</div>
+      <div class="checklist">
+        <div class="check-item">Accès aux 3 vues du dashboard</div>
+        <div class="check-item">Import et configuration des données géré par mes soins</div>
+        <div class="check-item">Prévisions IA actives dès le premier jour</div>
+        <div class="check-item">Support personnel par WhatsApp ou email</div>
+        <div class="check-item">Corrections et ajustements inclus</div>
+        <div class="check-item">Vos retours façonnent directement le produit</div>
+      </div>
+      <button class="btn-cta">Démarrer le pilote gratuit</button>
+      <div class="pilot-note">Pas de carte bancaire. Pas de contrat. On arrête quand vous le décidez.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DÉROULEMENT -->
+<section class="s-timeline">
+  <div class="inner">
+    <div class="tag dark">Comment ça se passe</div>
+    <h2>Du zéro aux premiers insights<br>en moins d'une semaine.</h2>
+    <div class="timeline">
+      <div class="t-item">
+        <div class="t-dot">📁</div>
+        <div>
+          <div class="t-week">Jours 1 – 2</div>
+          <div class="t-title">Mise en place et import des données</div>
+          <div class="t-text">On importe votre historique de ventes, on configure le dashboard selon votre boulangerie et on lance les premiers modèles. Vous ne touchez pas une ligne de code.</div>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-dot">🚀</div>
+        <div>
+          <div class="t-week">Jours 3 – 7</div>
+          <div class="t-title">Premiers insights en ligne</div>
+          <div class="t-text">Le dashboard tourne. Vous voyez votre Vue du Jour, les premières prévisions et les performances par produit. On affine ensemble ce qui ne vous convient pas.</div>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-dot">💬</div>
+        <div>
+          <div class="t-week">Semaines 2 – 3</div>
+          <div class="t-title">Utilisation réelle et retours terrain</div>
+          <div class="t-text">Vous l'intégrez dans votre quotidien. Je suis disponible pour toutes vos questions, ajustements ou fonctionnalités supplémentaires que vous jugeriez utiles.</div>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-dot">🤝</div>
+        <div>
+          <div class="t-week">Fin du mois</div>
+          <div class="t-title">Bilan honnête et décision libre</div>
+          <div class="t-text">On fait le point ensemble — ce qui a marché, ce qui peut s'améliorer, ce que vous aimeriez voir évoluer. Aucune pression pour continuer. Votre avis est la vraie valeur pour moi.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARIFS -->
+<section class="s-pricing">
+  <div class="inner">
+    <div class="tag">Si vous adorez ça</div>
+    <h2>Deux offres claires,<br>pour chaque ambition.</h2>
+    <p class="lead">Après le pilote, vous choisissez la formule qui vous correspond. Installation et formation incluses dans chaque offre, support et mises à jour compris tout au long de l'abonnement.</p>
+
+    <div class="plans-grid">
+
+      <!-- ORBIT -->
+      <div class="plan-card orbit">
+        <div class="plan-package-name">Package 01</div>
+        <div class="plan-title">Orbit</div>
+        <div class="plan-tagline">Analytics & Prévisions — le tableau de bord complet pour piloter votre boulangerie avec précision.</div>
+
+        <div class="hours-badge">
+          ⏱ 30h de mise en place & formation incluses
+        </div>
+
+        <div class="plan-pricing-block">
+          <div class="plan-setup-row">
+            <span class="plan-setup-label">Mise en place</span>
+            <span class="plan-setup-amount">2 800 €</span>
+          </div>
+          <div class="plan-monthly-row">
+            <span class="plan-monthly-label">Abonnement mensuel</span>
+            <div>
+              <span class="plan-monthly-amount">400 €</span>
+              <span class="plan-monthly-period">/ mois</span>
+            </div>
+          </div>
+        </div>
+
+        <ul class="plan-features">
+          <li>Dashboard Streamlit avec supervision en temps réel</li>
+          <li>Modèles de prévision Prophet & XGBoost — un par produit populaire, catégorie et sous-catégorie</li>
+          <li>Vue du Jour, Performance & Tendances, Prévisions & Planification</li>
+          <li>Alertes et insights automatisés</li>
+          <li>Support personnel inclus</li>
+        </ul>
+
+        <button class="plan-cta">Démarrer avec Orbit</button>
+        <div class="plan-note">Pilote 30 jours gratuit avant tout engagement</div>
+      </div>
+
+      <!-- ATLAS -->
+      <div class="plan-card atlas">
+        <div class="plan-package-name">Package 02</div>
+        <div class="plan-title">Atlas</div>
+        <div class="plan-tagline">Application SaaS sur mesure — une solution multi-boulangeries, scalable et intégrée à vos outils métier.</div>
+
+        <div class="hours-badge" style="background: rgba(0,217,255,0.08); border-color: rgba(0,217,255,0.2);">
+          🏗 Architecture enterprise & intégrations avancées
+        </div>
+
+        <div class="plan-pricing-block">
+          <div class="plan-setup-row">
+            <span class="plan-setup-label">Développement & déploiement</span>
+            <span class="plan-setup-amount">35 000 €</span>
+          </div>
+          <div class="plan-monthly-row">
+            <span class="plan-monthly-label">Service managé mensuel</span>
+            <div>
+              <span class="plan-monthly-amount">2 000 €</span>
+              <span class="plan-monthly-period">/ mois</span>
+            </div>
+          </div>
+        </div>
+
+        <ul class="plan-features">
+          <li>Application SaaS multi-tenant entièrement personnalisée</li>
+          <li>Intégrations enterprise (caisse, ERP, outils tiers)</li>
+          <li>Analytique avancée et reporting sur mesure</li>
+          <li>Architecture scalable pensée pour plusieurs points de vente</li>
+          <li>Service managé — maintenance, évolutions et support dédiés</li>
+        </ul>
+
+        <button class="plan-cta">Discuter du projet Atlas</button>
+        <div class="plan-note">Étude de faisabilité gratuite sur demande</div>
+      </div>
+
+    </div>
+
+    <!-- NOTE COMPARAISON -->
+    <div class="multi-note" style="margin-top: 28px;">
+      <strong>Pas sûr de quelle offre choisir ?</strong> Orbit convient parfaitement à une boulangerie qui veut des prévisions fiables et un pilotage quotidien sans friction. Atlas est taillé pour les groupes multi-sites ou les projets ambitieux nécessitant une intégration profonde avec l'existant. On en parle ensemble, sans engagement.
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">Bakery<span>Sales</span></div>
+  <div class="footer-sub">Conçu pour les boulangers qui veulent grandir avec confiance.</div>
+  <hr class="divider">
+  <div class="footer-copy">Offre personnelle et exclusive · Confidentiel</div>
+</footer>
+
+</body>
+</html>
